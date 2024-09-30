@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.todoapp.ui.screens.MainScreen
 import com.example.todoapp.ui.theme.TodoAppTheme
 
@@ -52,6 +53,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     TodoAppTheme {
-      //  Greeting("Android")
+        Scaffold(modifier = Modifier.fillMaxSize(),
+            floatingActionButton = {
+                FloatingActionButton(onClick = {},
+                    shape = MaterialTheme.shapes.extraLarge
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
+                }
+            }
+
+        ) { innerPadding ->
+
+            MainScreen(paddingValues = innerPadding)
+
+
+
+        }
     }
 }
