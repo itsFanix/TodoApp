@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,15 +61,20 @@ fun FirstPart() {
             .background(Color.LightGray),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
-            modifier = Modifier.padding(10.dp),
+        OutlinedTextField(
+            modifier = Modifier
+                .padding(5.dp)
+                .shadow( 0.dp, shape = MaterialTheme.shapes.medium)
+            ,
             value = "Todo name",
-            onValueChange = {}
+            onValueChange = {},
+            shape = MaterialTheme.shapes.medium
         )
 
-        TextField(
-            modifier = Modifier.padding(10.dp),
+        OutlinedTextField(
+            modifier = Modifier.padding(5.dp),
             value = "Add your task details",
+            shape = MaterialTheme.shapes.medium,
             onValueChange = {}
         )
 
