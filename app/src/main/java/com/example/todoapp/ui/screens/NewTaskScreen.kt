@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.todoapp.R
 import com.example.todoapp.ui.common.ButtonCustom
 import java.util.Calendar
 
@@ -61,6 +64,16 @@ fun  NewTaskScreen(paddingValues: PaddingValues) {
         Spacer(Modifier.padding(15.dp))
         TaskCategories()
         //Create Task Button
+        Spacer(Modifier.padding(15.dp))
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium
+
+        ) {
+            Text("Create Task")
+        }
     }
 
 }
@@ -154,35 +167,52 @@ fun DefineTime() {
         calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true
     )
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .height(120.dp)
             .background(
-                Color(0xFFf4f4f4),
-                shape = MaterialTheme.shapes.medium
-            ),
+            Color(0xFFf4f4f4),
+            shape = MaterialTheme.shapes.medium),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .background(
+                    Color(0xFFf4f4f4),
+                    shape = MaterialTheme.shapes.medium
+                ),
+            horizontalArrangement = Arrangement.Center,
 
-        horizontalArrangement = Arrangement.Center,
-
-    ) {
-        val dateTextValue =  if (selectedDate.isEmpty()) "Pick Date" else "Date: $selectedDate"
-        val timeTextValue = if (selectedTime.isEmpty()) "Pick Time" else "Time: $selectedTime"
+            ) {
+            val dateTextValue =  if (selectedDate.isEmpty()) "Pick Date" else "Date Selected"
+            val timeTextValue = if (selectedTime.isEmpty()) "Pick Time" else "Time selected"
             ButtonCustom(
-            { datePickerDialog.show() },
-            dateTextValue
-        )
-        ButtonCustom(
-            { timePickerDialog.show() },
-            timeTextValue
-        )
+                { datePickerDialog.show() },
+                dateTextValue
+            )
+            ButtonCustom(
+                { timePickerDialog.show() },
+                timeTextValue
+            )
 
 
-        if (selectedDate.isNotEmpty() && selectedTime.isNotEmpty()) {
-            Text(text = "Task set for: $selectedDate at $selectedTime")
+
+
+        }
+        Box{
+            if (selectedDate.isNotEmpty() && selectedTime.isNotEmpty()) {
+                Text(text = "Task set for: $selectedDate at $selectedTime")
+            }
         }
 
     }
+
+
+
 }
 @Composable
 fun TaskCategories() {
@@ -203,7 +233,7 @@ fun TaskCategories() {
 @Preview(showBackground = true)
 @Composable
 fun NewTaskScreenPreview () {
-    //NewTaskScreen(innerPadding)
+    NewTaskScreen(paddingValues = PaddingValues(10.dp))
 
 
 

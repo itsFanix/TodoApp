@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.todoapp.ui.screens.MainScreen
 import com.example.todoapp.ui.screens.NewTaskScreen
+import com.example.todoapp.ui.screens.UserAccountScreen
 import com.example.todoapp.ui.theme.TodoAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +46,9 @@ fun MyApp() {
         composable("mainPage") { MainPage(navController) }
         // Composable pour la deuxième page
         composable("secondPage") { SecondPage() }
+
+        //Composable pour la troisième page
+        composable("thirdPage") { ThirdPage() }
     }
 }
 @Composable
@@ -61,10 +65,7 @@ fun MainPage(navController: NavHostController) {
         }
 
     ) { innerPadding ->
-
-        MainScreen(paddingValues = innerPadding)
-
-
+        MainScreen(paddingValues = innerPadding, navController)
 
     }
 }
@@ -75,26 +76,19 @@ fun MainPage(navController: NavHostController) {
 @Composable
 fun SecondPage() {
     Scaffold(modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-
-            },
-                shape = MaterialTheme.shapes.extraLarge
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
-        }
-
     ) { innerPadding  ->
-
         NewTaskScreen(paddingValues = innerPadding)
-
-
-
     }
 }
 
 
+@Composable
+fun ThirdPage() {
+    Scaffold {
+        innerPadding -> UserAccountScreen(paddingValues = innerPadding)
+    }
+}
+/**
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
@@ -110,10 +104,9 @@ fun GreetingPreview() {
 
         ) { innerPadding ->
 
-            MainScreen(paddingValues = innerPadding)
-
+            MainScreen(paddingValues = innerPadding, navController = navController)
 
 
         }
     }
-}
+}*/

@@ -1,5 +1,6 @@
 package com.example.todoapp.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,19 +22,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.todoapp.data.Categorie
 import com.example.todoapp.ui.common.ItemCard
 import com.example.todoapp.ui.common.SimpleCard
 
 
 @Composable
-fun MainScreen(paddingValues: PaddingValues) {
+fun MainScreen(paddingValues: PaddingValues, navController: NavHostController) {
     Column(
         modifier = Modifier.padding(paddingValues),
         verticalArrangement =  Arrangement.spacedBy(12.dp)
     ) {
 
-         FirstComponent()
+         FirstComponent(navController)
 
          SecondComponent()
 
@@ -48,7 +50,7 @@ fun MainScreen(paddingValues: PaddingValues) {
 
 
 @Composable
-fun FirstComponent() {
+fun FirstComponent(navController: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,7 +72,15 @@ fun FirstComponent() {
 
         Row {
             Icon(Icons.Default.Notifications, contentDescription = "notif")
-            Icon(Icons.Default.Face, contentDescription = "face")
+            Icon(
+
+                Icons.Default.Face, contentDescription = "face",
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate("thirdPage")
+                    }
+
+            )
 
         }
 
@@ -124,7 +134,7 @@ fun MainScreenPreview() {
         verticalArrangement =  Arrangement.spacedBy(12.dp)
     ) {
 
-        FirstComponent()
+       // FirstComponent(navController)
 
         SecondComponent()
 
