@@ -1,5 +1,7 @@
 package com.example.todoapp.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -18,9 +20,9 @@ import java.time.LocalTime
  * On peut sauvegarder les catégories dans une BDD
  */
 
-
+@Entity(tableName = "tasks")
 data class Task(
-    val id : Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title : String,
     val description: String,
     val isCompleted : Boolean,
