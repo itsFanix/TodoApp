@@ -1,6 +1,9 @@
 package com.example.todoapp.ui.common
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager.TaskDescription
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,11 +31,31 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
+import com.example.todoapp.data.Priority
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
+
+fun checkDateStatus(date: LocalDate?) : String {
+    val today = LocalDate.now()
+
+    if (date != null) {
+        return when {
+            date.isEqual(today) -> "Today"
+            date.isBefore(today) -> "Yesterday"
+            date.isAfter(today) -> "Tomorrow"
+            else -> date.toString()
+        }
+    }
+    return "No date selected"
+}
 
 @SuppressLint("InvalidColorHexValue")
 @Composable
-fun ItemCard(){
+fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, taskTime : LocalTime?, taskCategory: String,
+             taskPriority: Priority
+             ){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,7 +108,7 @@ fun ItemCard(){
                                    .size(12.dp)
                            )
                            Text(
-                               "Today",
+                               checkDateStatus(taskDate),
                                color = Color(0xFFadb5bd),
                                style = MaterialTheme.typography.titleSmall
                            )
@@ -104,7 +127,7 @@ fun ItemCard(){
                                )
                            Text(
                                //Todo After implement The ViewModel
-                               "4:50 PM",
+                               taskTime.toString(),
                                color = Color(0xFFadb5bd),
                                style = MaterialTheme.typography.titleSmall
 
@@ -112,7 +135,7 @@ fun ItemCard(){
                        }
 
                    }
-                   Text("Todo Name ",
+                   Text(taskName,
                        modifier = Modifier.padding(2.dp)
                    )
 
@@ -137,8 +160,8 @@ fun ItemCard(){
     }
 }
 
-@Preview(showBackground = false)
-@Composable
-fun itemCardPreview() {
-    ItemCard()
-}
+//@Preview(showBackground = false)
+//@Composable
+//fun itemCardPreview() {
+//    ItemCard()
+//}
