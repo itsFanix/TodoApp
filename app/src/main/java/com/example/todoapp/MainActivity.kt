@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -13,19 +14,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 
 import androidx.navigation.compose.*
+import com.example.todoapp.data.DatabaseProvider
+import com.example.todoapp.data.TaskRepository
+import com.example.todoapp.data.TaskViewModelFactory
 import com.example.todoapp.ui.screens.MainScreen
 import com.example.todoapp.ui.screens.NewTaskScreen
 import com.example.todoapp.ui.screens.UserAccountScreen
 import com.example.todoapp.ui.theme.TodoAppTheme
+import com.example.todoapp.viewmodel.TaskViewModel
 
 class MainActivity : ComponentActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Initialiser la base de données et le repository
+
         enableEdgeToEdge()
         setContent {
             TodoAppTheme {
@@ -39,20 +49,27 @@ class MainActivity : ComponentActivity() {
 fun MyApp() {
     // Contrôleur de navigation
     val navController = rememberNavController()
+    val database = DatabaseProvider.getDatabase(LocalContext.current)
+    val  taskRepository = TaskRepository(database.taskDao())
 
     // Navigation avec le NavHost
     NavHost(navController = navController, startDestination = "mainPage") {
         // Composable pour la page principale
-        composable("mainPage") { MainPage(navController) }
+        composable("mainPage") { MainPage(navController, taskRepository) }
         // Composable pour la deuxième page
-        composable("secondPage") { SecondPage() }
+        composable("secondPage") { SecondPage(taskRepository) }
 
         //Composable pour la troisième page
         composable("thirdPage") { ThirdPage() }
     }
 }
 @Composable
-fun MainPage(navController: NavHostController) {
+fun MainPage(navController: NavHostController, taskRepository: TaskRepository) {
+    //Instancier le TaskViewModel
+    val taskViewModel: TaskViewModel = viewModel(
+        factory = TaskViewModelFactory(taskRepository)
+    )
+
     Scaffold(modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -65,7 +82,7 @@ fun MainPage(navController: NavHostController) {
         }
 
     ) { innerPadding ->
-        MainScreen(paddingValues = innerPadding, navController)
+        MainScreen(paddingValues = innerPadding, navController, taskViewModel)
 
     }
 }
@@ -74,10 +91,16 @@ fun MainPage(navController: NavHostController) {
 
 
 @Composable
-fun SecondPage() {
+fun SecondPage(taskRepository: TaskRepository) {
+    val taskViewModel: TaskViewModel = viewModel(
+        factory = TaskViewModelFactory(taskRepository)
+    )
     Scaffold(modifier = Modifier.fillMaxSize(),
     ) { innerPadding  ->
-        NewTaskScreen(paddingValues = innerPadding)
+        NewTaskScreen(
+            modifier = Modifier.padding(innerPadding),
+            onTaskAdded = {task -> taskViewModel.addTask(task)}
+            )
     }
 }
 
@@ -85,7 +108,7 @@ fun SecondPage() {
 @Composable
 fun ThirdPage() {
     Scaffold {
-        innerPadding -> UserAccountScreen(paddingValues = innerPadding)
+        innerPadding -> UserAccountScreen(modifier = Modifier.padding(innerPadding))
     }
 }
 /**

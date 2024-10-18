@@ -6,6 +6,8 @@ import androidx.room.Room
 
 //To create and initialize the Room databasen you'll typically use the Room.databaseBuilder() method
 object DatabaseProvider {
+
+    @Volatile
     private var INSTANCE: AppDatabase? = null
 
     fun getDatabase(context: Context) : AppDatabase {

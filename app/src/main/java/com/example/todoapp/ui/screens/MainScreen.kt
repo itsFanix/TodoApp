@@ -35,7 +35,7 @@ import com.example.todoapp.viewmodel.TaskViewModel
 
 
 @Composable
-fun MainScreen(paddingValues: PaddingValues, navController: NavHostController) {
+fun MainScreen(paddingValues: PaddingValues, navController: NavHostController, taskViewModel : TaskViewModel) {
     Column(
         modifier = Modifier.padding(paddingValues),
         verticalArrangement =  Arrangement.spacedBy(12.dp)
@@ -43,12 +43,9 @@ fun MainScreen(paddingValues: PaddingValues, navController: NavHostController) {
 
          FirstComponent(navController)
 
-         SecondComponent()
+         SecondComponent(navController)
 
-         ThirdComponent()
-
-
-
+         ThirdComponent(navController, taskViewModel)
 
     }
 }
@@ -75,7 +72,6 @@ fun FirstComponent(navController: NavHostController) {
                 style = MaterialTheme.typography.labelSmall
             )
         }
-
         Row {
             Icon(Icons.Default.Notifications, contentDescription = "notif")
             Icon(
@@ -94,7 +90,7 @@ fun FirstComponent(navController: NavHostController) {
 }
 
 @Composable
-fun SecondComponent() {
+fun SecondComponent(navController: NavHostController) {
     val categories = listOf(
         Categorie("Today",icon = Icons.Default.FavoriteBorder, 6,Color(0xFFa9def9 )),
         Categorie("Scheduled",icon = Icons.Default.FavoriteBorder, 5, Color(0xFFffe97f)),
@@ -102,13 +98,14 @@ fun SecondComponent() {
         Categorie("Overdue",icon = Icons.Default.FavoriteBorder, 3, Color(0xFFffc8dd) )
 
     )
+    //val columnCount = if (isTablet) 3 else
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
       .padding(15.dp, 3.dp)
 
         ) {
-        items(4) {index ->
+        items(categories.size) {index ->
 
             SimpleCard(
                 categories[index].name,
@@ -124,15 +121,14 @@ fun SecondComponent() {
 
 
 @Composable
-fun ThirdComponent() {
-    val taskViewModel: TaskViewModel = viewModel()
+fun ThirdComponent(navController: NavHostController, taskViewModel: TaskViewModel) {
     val tasks by taskViewModel.taskList.collectAsState(initial = emptyList())
 
     LazyColumn(
         modifier = Modifier.padding(20.dp)
     ) {
-       items(tasks) {
-           ItemCard(it.title, it.description, it.date, it.time, it.category, it.priority)
+       items(tasks, key = {task -> task.id}) { task ->
+           ItemCard(task.title, task.description, task.date, task.time,task.category, task.priority)
        }
     }
 }
@@ -147,9 +143,9 @@ fun MainScreenPreview() {
 
        // FirstComponent(navController)
 
-        SecondComponent()
+ //       SecondComponent(navController)
 
-        ThirdComponent()
+     //   ThirdComponent(navController)
 
 
 

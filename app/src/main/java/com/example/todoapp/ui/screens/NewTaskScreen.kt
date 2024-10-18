@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,23 +31,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.todoapp.R
+import com.example.todoapp.data.Priority
+import com.example.todoapp.data.Task
 import com.example.todoapp.ui.common.ButtonCustom
 import java.util.Calendar
 
 
 @Composable
-fun  NewTaskScreen(paddingValues: PaddingValues) {
+fun  NewTaskScreen(modifier: Modifier, onTaskAdded: (Task) -> Unit) {
+
+    var taskName by remember { mutableStateOf("") }
+    var taskDetails by remember { mutableStateOf("") }
+    var taskDate by remember { mutableStateOf("") }
+    var taskTime by remember { mutableStateOf("") }
+    var taskCreation by remember { mutableStateOf("") }
 
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
 
-        modifier = Modifier
+        modifier =modifier
             .padding(20.dp, 20.dp)
             .fillMaxSize()
     ) {
@@ -58,15 +63,31 @@ fun  NewTaskScreen(paddingValues: PaddingValues) {
             modifier = Modifier.padding(0.dp, 5.dp)
         )
         Spacer(Modifier.padding(15.dp))
-       FirstPart()
+       FirstPart(taskName , { taskName = it }, taskDetails, {taskDetails = it})
+
         Spacer(Modifier.padding(15.dp))
-        DefineTime()
+        DefineTime(taskDate, {taskDate = it}, taskTime, {taskTime = it})
         Spacer(Modifier.padding(15.dp))
         TaskCategories()
         //Create Task Button
         Spacer(Modifier.padding(15.dp))
         Button(
-            onClick = {},
+            onClick = {
+
+//                val  newTask = Task(
+//                    title = taskName,
+//                    description = taskDetails,
+//                    isCompleted = false,
+//                    date = taskDate,
+//                    time = taskTime,
+//                 creationDate = LocalDateTime,
+//                category = "Default",
+//                priority =  Priority.LOW,
+
+
+               // )
+                // onTaskAdded(newTask)
+                },
             modifier = Modifier
                 .fillMaxWidth(),
             shape = MaterialTheme.shapes.medium
@@ -84,7 +105,12 @@ fun  NewTaskScreen(paddingValues: PaddingValues) {
 //Task substask add details
 @SuppressLint("InvalidColorHexValue")
 @Composable
-fun FirstPart() {
+fun FirstPart(
+    taskName: String,
+    onTaskNameChange: (String) -> Unit,
+    taskDetails: String,
+   onTaskDetailChange: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,8 +127,8 @@ fun FirstPart() {
                 .height(50.dp)
                 .fillMaxSize()
                 .shadow( 0.dp, shape = MaterialTheme.shapes.medium),
-            value = "", //Not Good need To change That
-            onValueChange = {},
+            value = taskName, //Not Good need To change That
+            onValueChange = onTaskNameChange,
             shape = MaterialTheme.shapes.medium,
             textStyle = MaterialTheme.typography.bodySmall,
             placeholder = {
@@ -121,9 +147,9 @@ fun FirstPart() {
                 .fillMaxSize()
             ,
             singleLine = false,
-            value = "",
+            value = taskDetails,
             shape = MaterialTheme.shapes.medium,
-            onValueChange = {},
+            onValueChange = onTaskDetailChange,
             placeholder = {
                 Text( text ="Add your task details",
                     style = MaterialTheme.typography.bodySmall,
@@ -140,12 +166,11 @@ fun FirstPart() {
 
 //Time to accompish the task hour minut second
 
-@SuppressLint("SuspiciousIndentation")
-@Composable
-fun DefineTime() {
-    var selectedDate by remember { mutableStateOf("") }
-    var selectedTime by remember { mutableStateOf("") }
 
+@Composable
+fun DefineTime(selectedDate : String, onDateChange: (String) -> Unit, selectedTime : String, onTimeChange : (String) -> Unit) {
+    //var selectedDate  = selectedDate
+   // var selectedTime  = selectedTime
     val calendar = Calendar.getInstance()
 
     //Date Picker Dialog
@@ -153,7 +178,7 @@ fun DefineTime() {
          LocalContext.current,
          {
              _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-             selectedDate = "$dayOfMonth/${month + 1}/$year"
+             onDateChange( "$dayOfMonth/${month + 1}/$year")
          },
          calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),calendar.get(Calendar.DAY_OF_MONTH)
      )
@@ -162,7 +187,7 @@ fun DefineTime() {
     val timePickerDialog = TimePickerDialog(
         LocalContext.current,
         { _: TimePicker, hourOfDay: Int, minute: Int ->
-            selectedTime = "$hourOfDay:${if (minute < 10) "0$minute" else minute}"
+            onTimeChange("$hourOfDay:${if (minute < 10) "0$minute" else minute}")
         },
         calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true
     )
@@ -233,7 +258,7 @@ fun TaskCategories() {
 @Preview(showBackground = true)
 @Composable
 fun NewTaskScreenPreview () {
-    NewTaskScreen(paddingValues = PaddingValues(10.dp))
+    //NewTaskScreen(modifier = Modifier)
 
 
 
