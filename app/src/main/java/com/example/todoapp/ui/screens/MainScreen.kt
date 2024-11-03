@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.todoapp.data.Categorie
 import com.example.todoapp.ui.common.ItemCard
@@ -43,7 +42,7 @@ fun MainScreen(paddingValues: PaddingValues, navController: NavHostController, t
 
          FirstComponent(navController)
 
-         SecondComponent(navController)
+         SecondComponent(navController, taskViewModel)
 
          ThirdComponent(navController, taskViewModel)
 
@@ -54,6 +53,7 @@ fun MainScreen(paddingValues: PaddingValues, navController: NavHostController, t
 
 @Composable
 fun FirstComponent(navController: NavHostController) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -90,12 +90,17 @@ fun FirstComponent(navController: NavHostController) {
 }
 
 @Composable
-fun SecondComponent(navController: NavHostController) {
+fun SecondComponent(navController: NavHostController, taskViewModel: TaskViewModel) {
+    val tasks by taskViewModel.taskList.collectAsState(initial = emptyList())
+    val taskListSize = tasks.size
+    val todaytaskListSize = 0
+    val taskOverdueListSize = 0
+    val taskScheduledListSize = 0
     val categories = listOf(
-        Categorie("Today",icon = Icons.Default.FavoriteBorder, 6,Color(0xFFa9def9 )),
-        Categorie("Scheduled",icon = Icons.Default.FavoriteBorder, 5, Color(0xFFffe97f)),
-        Categorie("All",icon = Icons.Default.FavoriteBorder, 14, Color(0xFFd0f4de)),
-        Categorie("Overdue",icon = Icons.Default.FavoriteBorder, 3, Color(0xFFffc8dd) )
+        Categorie("Today",icon = Icons.Default.FavoriteBorder, todaytaskListSize,Color(0xFFa9def9 )),
+        Categorie("Scheduled",icon = Icons.Default.FavoriteBorder,  taskScheduledListSize , Color(0xFFffe97f)),
+        Categorie("All",icon = Icons.Default.FavoriteBorder, taskListSize, Color(0xFFd0f4de)),
+        Categorie("Overdue",icon = Icons.Default.FavoriteBorder, taskOverdueListSize, Color(0xFFffc8dd) )
 
     )
     //val columnCount = if (isTablet) 3 else
@@ -125,7 +130,9 @@ fun ThirdComponent(navController: NavHostController, taskViewModel: TaskViewMode
     val tasks by taskViewModel.taskList.collectAsState(initial = emptyList())
 
     LazyColumn(
-        modifier = Modifier.padding(20.dp)
+        modifier = Modifier.padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+
     ) {
        items(tasks, key = {task -> task.id}) { task ->
            ItemCard(task.title, task.description, task.date, task.time,task.category, task.priority)

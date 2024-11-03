@@ -33,9 +33,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.todoapp.data.Converters
 import com.example.todoapp.data.Priority
 import com.example.todoapp.data.Task
 import com.example.todoapp.ui.common.ButtonCustom
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 
@@ -44,8 +49,8 @@ fun  NewTaskScreen(modifier: Modifier, onTaskAdded: (Task) -> Unit) {
 
     var taskName by remember { mutableStateOf("") }
     var taskDetails by remember { mutableStateOf("") }
-    var taskDate by remember { mutableStateOf("") }
-    var taskTime by remember { mutableStateOf("") }
+    var taskDate by remember { mutableStateOf<LocalDate?>(null) }
+    var taskTime by remember { mutableStateOf<LocalTime?>(null) }
     var taskCreation by remember { mutableStateOf("") }
 
     Column(
@@ -66,7 +71,7 @@ fun  NewTaskScreen(modifier: Modifier, onTaskAdded: (Task) -> Unit) {
        FirstPart(taskName , { taskName = it }, taskDetails, {taskDetails = it})
 
         Spacer(Modifier.padding(15.dp))
-        DefineTime(taskDate, {taskDate = it}, taskTime, {taskTime = it})
+        DefineTime(taskDate, {taskDate = it}, taskTime, {taskTime = it} )
         Spacer(Modifier.padding(15.dp))
         TaskCategories()
         //Create Task Button
@@ -74,19 +79,21 @@ fun  NewTaskScreen(modifier: Modifier, onTaskAdded: (Task) -> Unit) {
         Button(
             onClick = {
 
-//                val  newTask = Task(
-//                    title = taskName,
-//                    description = taskDetails,
-//                    isCompleted = false,
-//                    date = taskDate,
-//                    time = taskTime,
-//                 creationDate = LocalDateTime,
-//                category = "Default",
-//                priority =  Priority.LOW,
+                val creation = LocalDateTime.now()
+
+               val  newTask = Task(
+                  title = taskName,
+                    description = taskDetails,
+                   isCompleted = false,
+                  date = taskDate,
+                  time = taskTime,
+                 creationDate = creation,
+               category = "Default",
+                priority =  Priority.LOW,
 
 
-               // )
-                // onTaskAdded(newTask)
+                )
+                onTaskAdded(newTask)
                 },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -168,9 +175,8 @@ fun FirstPart(
 
 
 @Composable
-fun DefineTime(selectedDate : String, onDateChange: (String) -> Unit, selectedTime : String, onTimeChange : (String) -> Unit) {
-    //var selectedDate  = selectedDate
-   // var selectedTime  = selectedTime
+fun DefineTime(selectedDate : LocalDate?, onDateChange: (LocalDate) -> Unit, selectedTime : LocalTime?, onTimeChange : (LocalTime) -> Unit) {
+
     val calendar = Calendar.getInstance()
 
     //Date Picker Dialog
@@ -178,7 +184,7 @@ fun DefineTime(selectedDate : String, onDateChange: (String) -> Unit, selectedTi
          LocalContext.current,
          {
              _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-             onDateChange( "$dayOfMonth/${month + 1}/$year")
+             onDateChange( LocalDate.of(year, month+1, dayOfMonth))
          },
          calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),calendar.get(Calendar.DAY_OF_MONTH)
      )
@@ -187,7 +193,7 @@ fun DefineTime(selectedDate : String, onDateChange: (String) -> Unit, selectedTi
     val timePickerDialog = TimePickerDialog(
         LocalContext.current,
         { _: TimePicker, hourOfDay: Int, minute: Int ->
-            onTimeChange("$hourOfDay:${if (minute < 10) "0$minute" else minute}")
+            onTimeChange(LocalTime.of(hourOfDay, minute))
         },
         calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true
     )
@@ -213,8 +219,8 @@ fun DefineTime(selectedDate : String, onDateChange: (String) -> Unit, selectedTi
             horizontalArrangement = Arrangement.Center,
 
             ) {
-            val dateTextValue =  if (selectedDate.isEmpty()) "Pick Date" else "Date Selected"
-            val timeTextValue = if (selectedTime.isEmpty()) "Pick Time" else "Time selected"
+            val dateTextValue =  if (selectedDate.toString().isEmpty()) "Pick Date" else "Date Selected"
+            val timeTextValue = if (selectedTime.toString().isEmpty()) "Pick Time" else "Time selected"
             ButtonCustom(
                 { datePickerDialog.show() },
                 dateTextValue
@@ -229,7 +235,7 @@ fun DefineTime(selectedDate : String, onDateChange: (String) -> Unit, selectedTi
 
         }
         Box{
-            if (selectedDate.isNotEmpty() && selectedTime.isNotEmpty()) {
+            if (selectedDate.toString().isNotEmpty()&& selectedTime.toString().isNotEmpty()) {
                 Text(text = "Task set for: $selectedDate at $selectedTime")
             }
         }
