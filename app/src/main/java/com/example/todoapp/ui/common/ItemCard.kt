@@ -48,7 +48,7 @@ fun checkDateStatus(date: LocalDate?) : String {
             else -> date.toString()
         }
     }
-    return "No date selected"
+    return "Today"
 }
 
 @SuppressLint("InvalidColorHexValue")
@@ -96,6 +96,7 @@ fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, ta
                        horizontalArrangement = Arrangement.spacedBy(15.dp)
                    ) {
                        //Today component
+
                        Row (
                            horizontalArrangement = Arrangement.spacedBy(2.dp),
                            verticalAlignment = Alignment.CenterVertically) {
@@ -107,14 +108,17 @@ fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, ta
                                modifier = Modifier
                                    .size(12.dp)
                            )
-                           Text(
-                               checkDateStatus(taskDate),
-                               color = Color(0xFFadb5bd),
-                               style = MaterialTheme.typography.titleSmall
-                           )
+
+                               Text(
+                                   checkDateStatus(taskDate),
+                                   color = Color(0xFFadb5bd),
+                                   style = MaterialTheme.typography.titleSmall
+                               )
+
+
                        }
                        // Hour Component
-
+                       if(taskTime != null) {
                        Row (
                            horizontalArrangement = Arrangement.spacedBy(2.dp),
                            verticalAlignment = Alignment.CenterVertically) {
@@ -125,13 +129,16 @@ fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, ta
                                modifier = Modifier
                                    .size(12.dp)
                                )
-                           Text(
-                               //Todo After implement The ViewModel
-                               taskTime.toString(),
-                               color = Color(0xFFadb5bd),
-                               style = MaterialTheme.typography.titleSmall
 
-                           )
+                               Text(
+                                   taskTime.toString(),
+                                   color = Color(0xFFadb5bd),
+                                   style = MaterialTheme.typography.titleSmall
+
+                               )
+                           }
+
+
                        }
 
                    }

@@ -57,7 +57,7 @@ fun MyApp() {
         // Composable pour la page principale
         composable("mainPage") { MainPage(navController, taskRepository) }
         // Composable pour la deuxième page
-        composable("secondPage") { SecondPage(taskRepository) }
+        composable("secondPage") { SecondPage(navController, taskRepository) }
 
         //Composable pour la troisième page
         composable("thirdPage") { ThirdPage() }
@@ -65,7 +65,6 @@ fun MyApp() {
 }
 @Composable
 fun MainPage(navController: NavHostController, taskRepository: TaskRepository) {
-    //Instancier le TaskViewModel
     val taskViewModel: TaskViewModel = viewModel(
         factory = TaskViewModelFactory(taskRepository)
     )
@@ -86,12 +85,8 @@ fun MainPage(navController: NavHostController, taskRepository: TaskRepository) {
 
     }
 }
-
-
-
-
 @Composable
-fun SecondPage(taskRepository: TaskRepository) {
+fun SecondPage(navController: NavHostController, taskRepository: TaskRepository) {
     val taskViewModel: TaskViewModel = viewModel(
         factory = TaskViewModelFactory(taskRepository)
     )
@@ -99,7 +94,11 @@ fun SecondPage(taskRepository: TaskRepository) {
     ) { innerPadding  ->
         NewTaskScreen(
             modifier = Modifier.padding(innerPadding),
-            onTaskAdded = {task -> taskViewModel.addTask(task)}
+            onTaskAdded = {
+                task -> taskViewModel.addTask(task);
+                navController.navigate("mainPage")
+
+            }
             )
     }
 }
