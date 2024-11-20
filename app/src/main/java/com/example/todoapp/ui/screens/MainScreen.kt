@@ -129,13 +129,19 @@ fun SecondComponent(navController: NavHostController, taskViewModel: TaskViewMod
 fun ThirdComponent(navController: NavHostController, taskViewModel: TaskViewModel) {
     val tasks by taskViewModel.taskList.collectAsState(initial = emptyList())
 
+    fun onTaskCheckedChange(id : Int, completed: Boolean) {
+        tasks.find { it.id ==id }?.isCompleted = completed
+    }
+
     LazyColumn(
         modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
 
     ) {
        items(tasks, key = {task -> task.id}) { task ->
-           ItemCard(task.title, task.description, task.date, task.time,task.category, task.priority)
+           ItemCard(task.title, task.description, task.date, task.time,task.category, task.isCompleted, task.priority, taskIsDone =  onTaskCheckedChange(task.id, task.isCompleted))
+
+               )
        }
     }
 }

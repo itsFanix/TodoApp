@@ -25,7 +25,7 @@ data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title : String,
     val description: String,
-    val isCompleted : Boolean,
+    var isCompleted : Boolean = false,
     val date : LocalDate?,
     val time : LocalTime?,
     val creationDate : LocalDateTime,

@@ -1,9 +1,6 @@
 package com.example.todoapp.ui.common
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager.TaskDescription
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,16 +21,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
 import com.example.todoapp.data.Priority
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 
@@ -53,18 +51,28 @@ fun checkDateStatus(date: LocalDate?) : String {
 
 @SuppressLint("InvalidColorHexValue")
 @Composable
-fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, taskTime : LocalTime?, taskCategory: String,
-             taskPriority: Priority
+fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, taskTime : LocalTime?, taskCategory: String, taskCompleted : Boolean,
+             taskPriority: Priority, taskIsDone : (Int ,Boolean) -> Unit
              ){
+    /* Task is completed */
+//    val modifier = if(taskCompleted) {
+//        Modifier.alpha(0.5f)
+//    } else {
+//        Modifier
+//    }
+ val visibilityModifier = if(taskCompleted) {
+     Modifier.alpha(0f)
+ } else {
+     Modifier
+ }
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-        ,
         shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
-
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(visibilityModifier)
     ) {
        Row(
            modifier = Modifier
@@ -85,7 +93,7 @@ fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, ta
                    Alignment.Center
 
                ) {
-                   CheckBoxCustom()
+                   CheckBoxCustom(checked = taskCompleted, taskIsDone = taskIsDone)
                }
                Column (
                    verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -108,14 +116,11 @@ fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, ta
                                modifier = Modifier
                                    .size(12.dp)
                            )
-
                                Text(
                                    checkDateStatus(taskDate),
                                    color = Color(0xFFadb5bd),
                                    style = MaterialTheme.typography.titleSmall
                                )
-
-
                        }
                        // Hour Component
                        if(taskTime != null) {
@@ -137,12 +142,14 @@ fun ItemCard(taskName: String, taskDescription: String, taskDate: LocalDate?, ta
 
                                )
                            }
-
-
                        }
 
                    }
-                   Text(taskName,
+                   Text(
+                       taskName,
+                       style = TextStyle(
+                           textDecoration = if(taskCompleted) TextDecoration.LineThrough else null
+                       ),
                        modifier = Modifier.padding(2.dp)
                    )
 

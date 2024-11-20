@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,18 +20,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
 @Composable
 
-fun CheckBoxCustom() {
+fun CheckBoxCustom(checked: Boolean, taskIsDone: (Boolean) -> Unit) {
 
-    var isChecked by remember { mutableStateOf(false) }
+    //var isChecked by remember { mutableStateOf(false) }
 
-
-    Box(
+    Checkbox(
+        checked = checked,
+        onCheckedChange = {isChecked -> taskIsDone(isChecked)}
+    )
+  /*  Box(
         modifier = Modifier
             .size(20.dp)
             .clip(CircleShape)
@@ -43,7 +46,6 @@ fun CheckBoxCustom() {
             )
             .clickable { isChecked = !isChecked },
         contentAlignment = Alignment.Center
-
     )
 
     {
@@ -57,11 +59,5 @@ fun CheckBoxCustom() {
         }
 
 
-    }
-}
-
-@Preview(showBackground = false)
-@Composable
-fun CheckBoxCustomPreview() {
-   CheckBoxCustom()
+    }*/
 }
